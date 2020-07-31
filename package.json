@@ -1,0 +1,29 @@
+{
+  "name": "nodejsapi",
+  "version": "1.0.0",
+  "description": "A simple nodejs API endpoint",
+  "main": "server.js",
+  "scripts": {
+    "start": "SET NODE_ENV=production & node server",
+    "dev": "nodemon server",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/MehrdadKiani/NodejsAPI.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/MehrdadKiani/NodejsAPI/issues"
+  },
+  "homepage": "https://github.com/MehrdadKiani/NodejsAPI#readme",
+  "dependencies": {
+    "dotenv": "^8.2.0",
+    "express": "^4.17.1",
+    "morgan": "^1.10.0"
+  },
+  "devDependencies": {
+    "nodemon": "^2.0.4"
+  }
+}
