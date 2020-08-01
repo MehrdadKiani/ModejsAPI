@@ -1,7 +1,7 @@
 "use strict";
 
 const BootcampModel = require('../models/Bootcamp');
-
+const ErrorHelperClass = require('../utils/errorResponseHelper');
 
 // @desc    Get all bootcamps
 // @route   GET /api/v1/bootcamps
@@ -23,10 +23,11 @@ exports.getBootcampById = async (req, res, next) => {
     try {
         const bootcamp = await BootcampModel.findById(req.params.id);
         if (!bootcamp)
-            return res.status(400).json({ success: false });
+            return next(new ErrorHelperClass(`Bootcamp not found with id ${req.params.id}`, 404));
+
         res.status(200).json({ success: true, data: bootcamp });
     } catch (error) {
-        return res.status(400).json({ success: false });
+        next(new ErrorHelperClass(error.message, 404));
     }
 }
 
