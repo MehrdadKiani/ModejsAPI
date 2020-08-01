@@ -28,13 +28,13 @@ The **nodemon** module is used only as a development dependency module with runn
 
 ### Define controllers and routes
 All methods that operate on the bootcamp resource are defined in **bootcampController.js** file:
-> - getAllBootcamps()
-> - getBootcampById()
-> - createNewBootcamp()
-> - updateAllBootcamps()
-> - updateBootcampById()
-> - deleteAllBootcamps()
-> - deleteBootcampById()
+> - `getAllBootcamps()`
+> - `getBootcampById()`
+> - `createNewBootcamp()`
+> - `updateAllBootcamps()`
+> - `updateBootcampById()`
+> - `deleteAllBootcamps()`
+> - `deleteBootcampById()`
 
 And all routes to these methods are defined in **routes.js** file in this way:
 ```js
@@ -42,7 +42,7 @@ router.route('/api/v1/bootcamps/')
     .get(getAllBootcamps)
     .post(createNewBootcamp)
     .put(updateAllBootcamps)
-    .delete(deleteAllBootcamp);
+    .delete(deleteAllBootcamps);
 
 router.route('/api/v1/bootcamps/:id')
     .get(getBootcampById)
