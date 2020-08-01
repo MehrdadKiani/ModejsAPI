@@ -50,5 +50,7 @@ router.route('/api/v1/bootcamps/:id')
     .put(updateBootcampById)
     .delete(deleteBootcampById);
 ```
-To mount the routes in the express server the line `app.use(router);` is added in **server.js** file. To simplify the routes, the fixed part of the url (/api/v1/bootcamps) can be set in the mounting time in this way: `app.use('/api/v1/bootcamps', router);`
-and then the routes in **routes.js** file can be changed from `router.route('/api/v1/bootcamps/')` to `router.route('/')`.
+To mount the routes in the express server the line `app.use(router);` is added in **server.js** file. To simplify the routes, the fixed part of the url (/api/v1/bootcamps) can be set in the mounting time in this way:  
+`app.use('/api/v1/bootcamps', router);`
+
+And then the routes in **routes.js** file can be changed from `router.route('/api/v1/bootcamps/')` to `router.route('/')`.
