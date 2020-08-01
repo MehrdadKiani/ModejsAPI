@@ -9,6 +9,7 @@ A basic nodejs API endpoint with mongoDB
 - [Define Bootcamp model and config mongoDB connection](#define-Bootcamp-model-and-config-mongoDB-connection)
 - [The main flow of data](#the-mai-flow-of-data)
 - [Conceptual design of flow](#conceptual-design-of-flow)
+- [Handle errors](#handle-errors)
 
 
 ## Installed modules
@@ -88,3 +89,9 @@ the main flow of data and things that need to be implemented when handling an HT
 ## Conceptual design of flow
 
 ![NodeJs route controller mongodbModel](images/NodeJs_route_controller_mongodbModel.png)
+
+## Handle errors
+next(error);
+default express error handler
+errorHandler middleware
+errorResponseHelper class
