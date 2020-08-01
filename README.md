@@ -6,14 +6,19 @@ A basic nodejs API endpoint with mongoDB
 - [Installed modules](#installed-modules)
 - [Basic commands to control development and production modes](#basic-commands-to-control-development-and-production-modes)
 - [Define controllers and routes](#define-controllers-and-routes)
+- [Define Bootcamp model and config mongoDB connection](#define-Bootcamp-model-and-config-mongoDB-connection)
+- [The main flow of data](#The-mai-flow-of-data)
+- [Conceptual design of flow](#Conceptual-design-of-flow)
 
-### Installed modules
+
+## Installed modules
 - express
 - morgan
 - nodemon
 - dotenv
+- mongoose
 
-### Basic commands to control development and production modes
+## Basic commands to control development and production modes
 To control development and production modes, the **script** section in the **package.json** file has changed in this way:
 ```js
   "scripts": {
@@ -27,7 +32,7 @@ The **nodemon** module is used only as a development dependency module with runn
 - run `npm run dev` for development mode
 - run `npm start` for production mode
 
-### Define controllers and routes
+## Define controllers and routes
 All methods that operate on the ***bootcamp*** resource are defined in **bootcampController.js** file:
 - `getAllBootcamps()`
 - `getBootcampById()`
@@ -37,7 +42,7 @@ All methods that operate on the ***bootcamp*** resource are defined in **bootcam
 - `deleteAllBootcamps()`
 - `deleteBootcampById()`
 
-And all routes to these methods are defined in **routes.js** file in this way:
+And all routes to execute these methods are defined in **routes.js** file in this way:
 ```js
 router.route('/api/v1/bootcamps/')
     .get(getAllBootcamps)
@@ -54,3 +59,32 @@ To mount the routes in the express server the line `app.use(router);` is added i
 `app.use('/api/v1/bootcamps', router);`
 
 And then the routes in **routes.js** file can be changed from `router.route('/api/v1/bootcamps/')` to `router.route('/')`.
+
+## Define Bootcamp model and config mongoDB connection
+DB Connection string is located in this path: `config/config.env` and is defined as the **MONGO_URI** variable.  
+An async function would handle the connection to the database. The **connectToDB** function is defined in `config/db.js` and is called in **server.js** file.
+
+A schema is defined in `models/Bootcamp.js` file that contains all **fields** related to Bootcamp collection.  
+`const BootcampSchema = new mongoose.Schema({... fields ...})`  
+And this schema is exported as a model for passing to controller methods.  
+
+![MongoDB](images\MongoDB_chart1.png)
+
+The bootcamp controller methods will consume the exported model in this way:
+```js
+const BootcampModel = require('../models/Bootcamp');
+
+getAllBootcamps = async (req, res, next) => {
+        const bootcamps = await BootcampModel.find();
+}
+```
+The `find()` method will fetch all documents related to the bootcamp collection.
+
+## The main flow of data
+the main flow of data and things that need to be implemented when handling an HTTP request/response  
+
+![MVC Express](images\MVC_Express.png)
+
+## Conceptual design of flow
+
+![NodeJs route controller mongodbModel](images\NodeJs_route_controller_mongodbModel.png)

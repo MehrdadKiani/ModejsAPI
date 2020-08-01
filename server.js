@@ -4,10 +4,14 @@ const express = require('express');
 const dotEnv = require('dotenv').config({ path: './config/config.env' });
 const router = require('./routes/routes');
 const morgan = require('morgan');
+const connectToDB = require('./config/db');
 const app = express();
 
 
+app.use(express.json());//Body parser
+app.use(router);//mount routes
+app.use(morgan('tiny'));//log the requests
 
-app.use(router);
-app.use(morgan('tiny'));
-app.listen(process.env.PORT, console.log(`Server is running in ${process.env.NODE_ENV} mode on port ${process.env.PORT}`));
+
+connectToDB();
+app.listen(process.env.PORT || 3000, console.log(`Server is running in ${process.env.NODE_ENV} mode on port ${process.env.PORT}`));

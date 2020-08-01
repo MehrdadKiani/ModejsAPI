@@ -3,7 +3,7 @@
 const express = require('express');
 const { getAllBootcamps, getBootcampById, createNewBootcamp, updateAllBootcamps, updateBootcampById, deleteAllBootcamps, deleteBootcampById } = require('../controllers/bootcampController')
 
-router = express.Router();
+router = express.Router();//Express Router middleware
 
 router.route('/api/v1/bootcamps/')
     .get(getAllBootcamps)
