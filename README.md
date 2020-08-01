@@ -3,14 +3,15 @@ A basic nodejs API endpoint with mongoDB
 
 # Contents
 
+- [Installed modules](#installed-modules)
 - [Basic commands to control development and production modes](#basic-commands-to-control-development-and-production-modes)
 - [Define controllers and routes](#define-controllers-and-routes)
 
 ### Installed modules
-> - express
-> - morgan
-> - nodemon
-> - dotenv
+- express
+- morgan
+- nodemon
+- dotenv
 
 ### Basic commands to control development and production modes
 To control development and production modes, the **script** section in the **package.json** file has changed in this way:
@@ -23,18 +24,18 @@ To control development and production modes, the **script** section in the **pac
 ```
 The **nodemon** module is used only as a development dependency module with running command `npm install nodemon --save-dev`. **NODE_ENV** variable is defined in **config.env** file to switch between two current modes.
 
-> - run `npm run dev` for development mode
-> - run `npm start` for production mode
+- run `npm run dev` for development mode
+- run `npm start` for production mode
 
 ### Define controllers and routes
 All methods that operate on the bootcamp resource are defined in **bootcampController.js** file:
-> - `getAllBootcamps()`
-> - `getBootcampById()`
-> - `createNewBootcamp()`
-> - `updateAllBootcamps()`
-> - `updateBootcampById()`
-> - `deleteAllBootcamps()`
-> - `deleteBootcampById()`
+- `getAllBootcamps()`
+- `getBootcampById()`
+- `createNewBootcamp()`
+- `updateAllBootcamps()`
+- `updateBootcampById()`
+- `deleteAllBootcamps()`
+- `deleteBootcampById()`
 
 And all routes to these methods are defined in **routes.js** file in this way:
 ```js
