@@ -68,7 +68,7 @@ A schema is defined in `models/Bootcamp.js` file that contains all **fields** re
 `const BootcampSchema = new mongoose.Schema({... fields ...})`  
 And this schema is exported as a model for passing to controller methods.  
 
-![MongoDB](.\images\MongoDB_chart1.png)
+![MongoDB](images/MongoDB_chart1.png)
 
 The bootcamp controller methods will consume the exported model in this way:
 ```js
@@ -83,8 +83,8 @@ The `find()` method will fetch all documents related to the bootcamp collection.
 ## The main flow of data
 the main flow of data and things that need to be implemented when handling an HTTP request/response  
 
-![MVC Express](.\images\MVC_Express.png)
+![MVC Express](images/MVC_Express.png)
 
 ## Conceptual design of flow
 
-![NodeJs route controller mongodbModel](.\images\NodeJs_route_controller_mongodbModel.png)
+![NodeJs route controller mongodbModel](images/NodeJs_route_controller_mongodbModel.png)
