@@ -28,7 +28,7 @@ The **nodemon** module is used only as a development dependency module with runn
 - run `npm start` for production mode
 
 ### Define controllers and routes
-All methods that operate on the bootcamp resource are defined in **bootcampController.js** file:
+All methods that operate on the ***bootcamp*** resource are defined in **bootcampController.js** file:
 - `getAllBootcamps()`
 - `getBootcampById()`
 - `createNewBootcamp()`
@@ -50,4 +50,5 @@ router.route('/api/v1/bootcamps/:id')
     .put(updateBootcampById)
     .delete(deleteBootcampById);
 ```
-To mount the routes in the express server the line `app.use(router);` is added in **server.js** file.
+To mount the routes in the express server the line `app.use(router);` is added in **server.js** file. To simplify the routes, the fixed part of the url (/api/v1/bootcamps) can be set in the mounting time in this way: `app.use('/api/v1/bootcamps', router);`
+and then the routes in **routes.js** file can be changed from `router.route('/api/v1/bootcamps/')` to `router.route('/')`.
