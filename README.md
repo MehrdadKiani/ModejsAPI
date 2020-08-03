@@ -151,7 +151,7 @@ handleError = (err, req, res, next) => {
 ```
 ### Async error handler (skip using try catch block)
 Applying some DRY (Dont Repeat Yourself)  
-For any request handler like code above, we should use **try/catch** block to catch occurred errors and pass it to the `next()`.
+For any request handler like code above (`getBootcampById()` function), we should use **try/catch** block to catch occurred errors and pass it to the `next()`.
 It sucks to have a **try/catch** statement in each request handler. A simple way is to change the **try/catch** into a promise. We can abstract it into a wrapper function, and we can attach this wrapper function to each request handler. The wrapper function can be like this (`asyncHandler()`):
 ```js
 asyncHandler = fn => (req, res, next) => {
