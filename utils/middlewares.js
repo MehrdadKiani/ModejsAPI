@@ -1,6 +1,5 @@
 "use strict";
 
-
 // @desc    Log request to console
 exports.logger = (req, res, next) => {
     //adding a new variable(logger for example) to request, so it will be accessible in all routes
@@ -11,13 +10,13 @@ exports.logger = (req, res, next) => {
 };
 
 //custom error handler middleware
-exports.errorHandler = (err, req, res, next) => {
-    //log to console for dev
-    //err will comes from the next() method from controller
-    //err.statusCode comes from the new extended class (errorResponseHelper class)
-    console.log(err.stack);
-    res.status(err.statusCode || 500).json({
+exports.handleError = (err, req, res, next) => {
+    let { statusCode, message } = err;
+    statusCode = statusCode || 500;
+
+    //let errorMsg = err.stack.split('\n')[0];
+    res.status(statusCode).json({
         success: false,
-        message: err.message || 'Not defined!'
+        message
     });
 };
