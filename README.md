@@ -87,7 +87,7 @@ getAllBootcamps = async (req, res, next) => {
 The `find()` method will fetch all documents related to the bootcamp collection.
 
 ## The main flow of data
-the main flow of data and things that need to be implemented when handling an HTTP request/response  
+The main flow of data and things that need to be implemented when handling an HTTP request/response  
 
 ![MVC Express](images/MVC_Express.png)
 
@@ -113,9 +113,9 @@ const connectToDB = async () => {
     console.log(`MongoDB connected: ${conn.connection.host}`);
 }
 ```
-`mongoose.connect()` return a **promise** and we are able to handle the rejection with 'catch' block.
+The `mongoose.connect()` return a **promise** and we are able to handle the rejection with **catch** block.
 If we are using the **async/await** method we should wrap the code in **try/catch** block to handle rejection.
-So if we want to handle the rejection without the two mentioned method we can build a global handler to handle **unhandled promise rejection** in this way: (At the end of `servr.js` file)
+So if we want to handle the rejection without the two mentioned methods we can build a global handler to handle **unhandled promise rejection** in this way as a global event: (located at the end of `servr.js` file)
 ```js
 process.on('unhandledRejection', (err, promise) => {
     console.log(`UnhandledRejection: ${err}`);
@@ -137,7 +137,7 @@ getBootcampById = async (req, res, next) => {
     }
 };
 ```
-And then we can catch the errors with a custom error handler middleware ( handleError() function in the `utils/middlewares.js` file ) that is registerd on `server.js` file ( `app.use(handleError);` ).
+And then we can catch the errors with a custom error handler middleware ( `handleError()` function in the `utils/middlewares.js` file ) that is registerd on `server.js` file ( `app.use(handleError);` ).
 ```js
 handleError = (err, req, res, next) => {
     let { statusCode, message } = err;
@@ -151,8 +151,8 @@ handleError = (err, req, res, next) => {
 ```
 ### Async error handler (skip using try catch block)
 Applying some DRY (Dont Repeat Yourself)  
-For any request handler like code above, we should use try/catch block to catch occurred errors and pass it to the `next()`.
-It sucks to have a try/catch statement in each request handler. A simple way is to change the try/catch into a promise. We can abstract it into a wrapper function, and we can attach this wrapper function to each request handler. The wrapper function can be like this (`asyncHandler()`):
+For any request handler like code above, we should use **try/catch** block to catch occurred errors and pass it to the `next()`.
+It sucks to have a **try/catch** statement in each request handler. A simple way is to change the **try/catch** into a promise. We can abstract it into a wrapper function, and we can attach this wrapper function to each request handler. The wrapper function can be like this (`asyncHandler()`):
 ```js
 asyncHandler = fn => (req, res, next) => {
     Promise
@@ -160,7 +160,8 @@ asyncHandler = fn => (req, res, next) => {
         .catch(next);
 }
 ```
-Now we can wrap all async request handler into `asyncHandler()` function, and any time the request handler gets an error, the catch will be executed, and as a result, `next()` will be executed with the occurred error.
+Now we can wrap all async request handlers into `asyncHandler()` function, and any time the request handler gets an error, the catch will be executed, and as a result, `next()` will be executed with the occurred error.  
+So, in the code below, we dont need the **try/catch** block any more, and also the `next()` function will be handled by `asyncHandler()` function.
 ```js
 exports.getBootcampById = asyncHandler(async (req, res, next) => {
     const bootcamp = await BootcampModel.findById(req.params.id);
@@ -188,7 +189,7 @@ getBootcampById = asyncHandler(async (req, res, next) => {
     res.status(200).json({ success: true, data: bootcamp });
 });
 ```
-We can create a custom error class (ErrorHandler class) from Javascript error class and add our properties to it. It can be like this:
+We can create a custom error class (`ErrorHandler` class) from Javascript error class and add our properties to it. It can be like this:
 
 ```js
 class ErrorHandler extends Error {
@@ -199,7 +200,7 @@ class ErrorHandler extends Error {
     }
 }
 ```
-Now we can catch it with the `handleError()` function that explained above and customize the error and status code if needed.
+Now we can catch errors with the `handleError()` function that explained above and customize the error message and status code if needed.
 
 
 
