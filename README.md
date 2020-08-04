@@ -101,7 +101,7 @@ The main flow of data and things that need to be implemented when handling an HT
 
 ## Handle errors
 ### Unhandled promise rejection
-Code below shows how the DB connection handled, what if an error occurs?
+Code below shows how the DB connection is handled, what if an error occurs?
 ```js
 const connectToDB = async () => {
     const conn = await mongoose.connect(process.env.MONGO_URI, {

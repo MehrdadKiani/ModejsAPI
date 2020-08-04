@@ -2,7 +2,7 @@
 
 const BootcampModel = require('../models/Bootcamp');
 const { asyncHandler } = require('../utils/asyncHandler');
-const ErrorHandler = require('../utils/ErrorHandlerClass');
+const CustomErrorHandler = require('../utils/ErrorHandlerClass');
 
 
 exports.getAllBootcamps = asyncHandler(async (req, res, next) => {
@@ -14,7 +14,7 @@ exports.getAllBootcamps = asyncHandler(async (req, res, next) => {
 exports.getBootcampById = asyncHandler(async (req, res, next) => {
     const bootcamp = await BootcampModel.findById(req.params.id);
     if (!bootcamp)
-        throw new ErrorHandler(404, 'There is not bootcamp');
+        throw new CustomErrorHandler(404, `Bootcamp with id ${req.params.id} not found`);
     res.status(200).json({ success: true, data: bootcamp });
 });
 
@@ -35,7 +35,7 @@ exports.resetData = asyncHandler(async (req, res, next) => {
 exports.updateBootcampById = asyncHandler(async (req, res, next) => {
     const bootcamp = await BootcampModel.findByIdAndUpdate(req.params.id, req.body, { new: true, runValidators: true });
     if (!bootcamp)
-        return res.status(400).json({ success: false });
+        throw new CustomErrorHandler(404, `Bootcamp with id ${req.params.id} not found`);
     res.status(200).json({ success: true, data: bootcamp });
 });
 

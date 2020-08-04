@@ -11,10 +11,13 @@ exports.logger = (req, res, next) => {
 
 //custom error handler middleware
 exports.handleError = (err, req, res, next) => {
+    console.log(err);
+
     let { statusCode, message } = err;
+
     statusCode = statusCode || 500;
 
-    //let errorMsg = err.stack.split('\n')[0];
+    //let reason = err.reason.split('\n')[0];
     res.status(statusCode).json({
         success: false,
         message
