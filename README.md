@@ -23,6 +23,7 @@ A basic nodejs API endpoint with mongoDB
 - nodemon
 - dotenv
 - mongoose
+- 
 
 ## Basic commands to control development and production modes
 To control development and production modes, the **script** section in the **package.json** file has changed in this way:
@@ -204,5 +205,18 @@ Now we can catch errors with the `handleError()` function that explained above a
 
 
 
-## Mongoose middleware
-https://mongoosejs.com/docs/middleware.html
+## Mongoose middleware (pre and post hooks)
+https://mongoosejs.com/docs/middleware.html  
+Middleware are functions which are passed control during execution of asynchronous functions. (middleware is specified on the schema level)  
+Mongoose has 4 types of middleware:
+- **Document middleware** (validate, save, remove, updateOne, deleteOne,init)             
+- **Model middleware** (insertMany)
+- **Aggregate middleware** (aggregate)
+- **Query middleware** (count, deleteMany, deleteOne, find, findOne, findOneAndDelete, findOneAndRemove, findOneAndUpdate, remove, update, updateOne, updateMany)
+
+All middleware types support **pre** and **post** hooks.  
+Middleware are useful for atomizing model logic. Here are some other ideas:
+- complex validation
+- removing dependent documents (removing a user removes all his blogposts)
+- asynchronous defaults
+- asynchronous tasks that a certain action triggers

@@ -1,6 +1,7 @@
 "use strict";
 
 const mongoose = require('mongoose');
+const slugify = require('slugify');
 
 const BootcampSchema = new mongoose.Schema({
     name: {
@@ -103,5 +104,22 @@ const BootcampSchema = new mongoose.Schema({
         default: Date.now
     }
 });
+
+//regular function instead of arrow function
+//arrow functions handle 'this' keyword differently
+BootcampSchema.pre('save', function (next) {
+    this.slug = slugify(this.name, { lower: true });
+
+    //console.log('before next');
+    //return next(); //return next(); will make sure the rest of this function doesn't run
+    next();
+    //console.log('after next');
+});
+
+//async/ await model
+// BootcampSchema.pre('save', async function () {
+//     this.slug = await slugify(this.name, { lower: true });
+//     console.log('test');
+// });
 
 module.exports = mongoose.model('Bootcamp', BootcampSchema);
