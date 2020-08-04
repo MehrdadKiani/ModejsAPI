@@ -220,3 +220,5 @@ Middleware are useful for atomizing model logic. Here are some other ideas:
 - removing dependent documents (removing a user removes all his blogposts)
 - asynchronous defaults
 - asynchronous tasks that a certain action triggers
+
+![Mongoose Middlewares](images/Mongoose_Middlewares.png)

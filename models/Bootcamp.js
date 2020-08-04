@@ -109,11 +109,8 @@ const BootcampSchema = new mongoose.Schema({
 //arrow functions handle 'this' keyword differently
 BootcampSchema.pre('save', function (next) {
     this.slug = slugify(this.name, { lower: true });
-
-    //console.log('before next');
     //return next(); //return next(); will make sure the rest of this function doesn't run
     next();
-    //console.log('after next');
 });
 
 //async/ await model
