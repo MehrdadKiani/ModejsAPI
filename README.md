@@ -12,7 +12,7 @@ A basic nodejs API endpoint with mongoDB
 - [Handle errors](#handle-errors)
     + [Unhandled promise rejection](#unhandled-promise-rejection)
     + [Default express error handler](#default-express-error-handler)
-    + [Async error handler (skip using try catch block)](#async-error-handler-(skip-using-try-catch-block))
+    + [Async error handler - skip using try catch block](#async-error-handler---skip-using-try-catch-block)
     + [Custom error handler](#custom-error-handler)
 - [Mongoose middleware - pre and post hooks](#mongoose-middleware---pre-and-post-hooks)
     + [Node-geocoder module](#node-geocoder-module)
@@ -152,7 +152,7 @@ handleError = (err, req, res, next) => {
     });
 };
 ```
-### Async error handler (skip using try catch block)
+### Async error handler - skip using try catch block
 Applying some DRY (Dont Repeat Yourself)  
 For any request handler like code above (`getBootcampById()` function), we should use **try/catch** block to catch occurred errors and pass it to the `next()`.
 It sucks to have a **try/catch** statement in each request handler. A simple way is to change the **try/catch** into a promise. We can abstract it into a wrapper function, and we can attach this wrapper function to each request handler. The wrapper function can be like this (`asyncHandler()`):
@@ -219,7 +219,7 @@ Mongoose has 4 types of middleware:
 All middleware types support **pre** and **post** hooks. Middleware are useful for atomizing model logic.  
 
 **Goel**: Change the name of Bootcamp to slug and store it into DB  
-Imagine the name of Bootcamp is 'DEV Advance Camp', and for some reason, we want to change it to 'dev-advance-camp' and save this slug into DB just before saving the name.  
+Imagine the name of Bootcamp is `DEV Advance Camp`, and for some reason, we want to change it to `dev-advance-camp` and save this slug into DB just before saving the name.  
 The name of Bootcamp comes from the client and we can manipulate this data with a **middleware** on the **schema** just **before** **saving** this data into the database. 
 This function `BootcampSchema.pre('save', function (next) {})` will execute before saving data into the DB, so we can change the name to the slug here.
 ```js
@@ -254,7 +254,7 @@ and we want a GeoJSON Location data like this:
             "country": "IT"
             }
 ```
-The **node-geocoder** module is set in the file `utils/geocoder.js` with some basic parameters. The geocoder object is used in the schema like this: (`geocode()` function would convert the plain address text to **GeoJSON location data**)
+The **node-geocoder** module is set in the file `utils/geocoder.js` with some basic parameters. The **geocoder** object is used in the schema like this: (`geocode()` function would convert the plain address text to **GeoJSON location data**)
 ```js
 BootcampSchema.pre('save', async function () {
     const loc = await geocoder.geocode(this.address);
