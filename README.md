@@ -1,5 +1,6 @@
 # Nodejs API Example
-A basic nodejs API endpoint with mongoDB
+A basic nodejs API endpoint with mongoDB  
+Rename `_config.env` file to `config.env` file and set parameters by your own.
 
 # Contents
 

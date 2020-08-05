@@ -41,6 +41,7 @@ exports.updateBootcampById = asyncHandler(async (req, res, next) => {
 
 
 exports.updateAllBootcamps = asyncHandler(async (req, res, next) => {
+    //const bootcamp = await BootcampModel.updateMany(req.body, { new: true, runValidators: true });
     res.status(200).json({ success: true, msg: `Update all bootcamps` });
 });
 
@@ -48,7 +49,7 @@ exports.updateAllBootcamps = asyncHandler(async (req, res, next) => {
 exports.deleteBootcampById = asyncHandler(async (req, res, next) => {
     const bootcamp = await BootcampModel.findByIdAndDelete(req.params.id);
     if (!bootcamp)
-        return res.status(400).json({ success: false });
+        throw new CustomErrorHandler(404, `Bootcamp with id ${req.params.id} not found`);
     res.status(200).json({ success: true, data: bootcamp });
 });
 
