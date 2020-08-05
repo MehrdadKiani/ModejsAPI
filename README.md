@@ -14,7 +14,8 @@ A basic nodejs API endpoint with mongoDB
     + [Default express error handler](#default-express-error-handler)
     + [Async error handler (skip using try catch block)](#async-error-handler-(skip-using-try-catch-block))
     + [Custom error handler](#custom-error-handler)
-- [Mongoose middleware](#mongoose-middleware)
+- [Mongoose middleware (pre and post hooks)](#mongoose-middleware-(pre-and-post-hooks))
+    + [Node-geocoder module](#node-geocoder-module)
 
 
 ## Installed modules
@@ -23,7 +24,8 @@ A basic nodejs API endpoint with mongoDB
 - nodemon
 - dotenv
 - mongoose
-- 
+- slugify
+- node-geocoders
 
 ## Basic commands to control development and production modes
 To control development and production modes, the **script** section in the **package.json** file has changed in this way:
@@ -214,11 +216,59 @@ Mongoose has 4 types of middleware:
 - **Aggregate middleware** (aggregate)
 - **Query middleware** (count, deleteMany, deleteOne, find, findOne, findOneAndDelete, findOneAndRemove, findOneAndUpdate, remove, update, updateOne, updateMany)
 
-All middleware types support **pre** and **post** hooks.  
-Middleware are useful for atomizing model logic. Here are some other ideas:
-- complex validation
-- removing dependent documents (removing a user removes all his blogposts)
-- asynchronous defaults
-- asynchronous tasks that a certain action triggers
+All middleware types support **pre** and **post** hooks. Middleware are useful for atomizing model logic.  
 
+**Goel**: Change the name of Bootcamp to slug and store it into DB  
+Imagine the name of Bootcamp is 'DEV Advance Camp', and for some reason, we want to change it to 'dev-advance-camp' and save this slug into DB just before saving the name.  
+The name of Bootcamp comes from the client and we can manipulate this data with a **middleware** on the **schema** just **before** **saving** this data into the database. 
+This function `BootcampSchema.pre('save', function (next) {})` will execute before saving data into the DB, so we can change the name to the slug here.
+```js
+BootcampSchema.pre('save', function (next) {
+    this.slug = slugify(this.name, { lower: true });
+    next();
+});
+```
 ![Mongoose Middlewares](images/Mongoose_Middlewares.png)
+
+
+### Node-geocoder module
+https://github.com/nchaulet/node-geocoder  
+A Node library for geocoding and reverse geocoding  
+
+**Goel**: get ***GeoJSON*** Location from an address  
+Imagine a user's address received by the server, and now we need to manipulate the address and extract the **GeoJSON Location** data from that address by a map provider like **MapQuest**.  
+For example, the address is: `corso siracusa 72 torini italy`
+and we want a GeoJSON Location data like this:  
+```js
+"location": {
+            "type": "Point",
+            "coordinates": [
+                7.63402,
+                45.04718
+            ],
+            "formattedAddress": "Corso Siracusa 72, Torino, Piemonte 10136, IT",
+            "street": "Corso Siracusa 72",
+            "city": "Torino",
+            "state": "Piemonte",
+            "zipcode": "10136",
+            "country": "IT"
+            }
+```
+The **node-geocoder** module is set in the file `utils/geocoder.js` with some basic parameters. The geocoder object is used in the schema like this: (`geocode()` function would convert the plain address text to **GeoJSON location data**)
+```js
+BootcampSchema.pre('save', async function () {
+    const loc = await geocoder.geocode(this.address);
+    this.location = {
+        type: 'Point',
+        coordinates: [loc[0].longitude, loc[0].latitude],
+        formattedAddress: loc[0].formattedAddress,
+        street: loc[0].streetName,
+        city: loc[0].city,
+        state: loc[0].stateCode,
+        zipcode: loc[0].zipcode,
+        country: loc[0].countryCode
+    };
+});
+```
+
+ 

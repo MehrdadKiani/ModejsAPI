@@ -1,7 +1,7 @@
 "use strict";
 
 // @desc    Log request to console
-exports.logger = (req, res, next) => {
+const logger = (req, res, next) => {
     //adding a new variable(logger for example) to request, so it will be accessible in all routes
     req.logger = 'Logger middleware added';
     console.log('Logger middleware ran!');
@@ -10,7 +10,7 @@ exports.logger = (req, res, next) => {
 };
 
 //custom error handler middleware
-exports.handleError = (err, req, res, next) => {
+const handleError = (err, req, res, next) => {
     console.log(err);
 
     let { statusCode, message } = err;
@@ -23,3 +23,5 @@ exports.handleError = (err, req, res, next) => {
         message
     });
 };
+
+module.exports = handleError;
