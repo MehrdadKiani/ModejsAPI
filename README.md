@@ -14,7 +14,7 @@ A basic nodejs API endpoint with mongoDB
     + [Default express error handler](#default-express-error-handler)
     + [Async error handler (skip using try catch block)](#async-error-handler-(skip-using-try-catch-block))
     + [Custom error handler](#custom-error-handler)
-- [Mongoose middleware (pre and post hooks)](#mongoose-middleware-(pre-and-post-hooks))
+- [Mongoose middleware - pre and post hooks](#mongoose-middleware---pre-and-post-hooks)
     + [Node-geocoder module](#node-geocoder-module)
 
 
@@ -207,7 +207,7 @@ Now we can catch errors with the `handleError()` function that explained above a
 
 
 
-## Mongoose middleware (pre and post hooks)
+## Mongoose middleware - pre and post hooks
 https://mongoosejs.com/docs/middleware.html  
 Middleware are functions which are passed control during execution of asynchronous functions. (middleware is specified on the schema level)  
 Mongoose has 4 types of middleware:
