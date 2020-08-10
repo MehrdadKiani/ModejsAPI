@@ -3,14 +3,69 @@
 const BootcampModel = require('../models/Bootcamp');
 const asyncHandler = require('../utils/asyncHandler');
 const CustomErrorHandler = require('../utils/ErrorHandlerClass');
+const geocoder = require('../utils/geocoder');
 
 
+
+/**
+ * Get all bootcamps
+ * @route       GET /api/v1/bootcamps
+ * @access      Publics
+ */
 exports.getAllBootcamps = asyncHandler(async (req, res, next) => {
-    const bootcamps = await BootcampModel.find();
-    res.status(200).json({ success: true, count: bootcamps.length, data: bootcamps });
+    let requestQuery = { ...req.query };
+    let select = '';
+    let sort = '';
+    let limit = 10;
+    let page = 1;
+    let finalQuery = '';
+
+
+    Object.entries(requestQuery).forEach(([key, value]) => {
+        delete requestQuery['select'];
+        if (key === 'select') { select = value.toString().split(',').join(' ') };
+
+        delete requestQuery['sort'];
+        if (key === 'sort') { sor = value.toString().split(',').join(' ') };
+
+        delete requestQuery['limit'];
+        if (key === 'limit') { limit = parseInt(value) };
+
+        delete requestQuery['page'];
+        if (key === 'page') { page = parseInt(value) };
+    });
+
+    const totalDocs = await BootcampModel.countDocuments();
+    const startIndex = (page - 1) * limit;
+    const endIndex = page * limit;
+
+    finalQuery = JSON.parse(JSON.stringify(requestQuery).replace(/\b(gt|gte|lt|lte|in)\b/g, match => `$${match}`));
+    finalQuery = BootcampModel.find(finalQuery).populate('courseList');
+    finalQuery = finalQuery.select(select);
+    finalQuery = finalQuery.sort(sort);
+    finalQuery = finalQuery.limit(limit);
+    finalQuery = finalQuery.skip(startIndex);
+
+
+    //pagination
+    let pagination = { limit: limit };
+    if (endIndex < totalDocs) { pagination.nextPage = page + 1; }
+    if (startIndex > 0 && startIndex < totalDocs) { pagination.prevPage = page - 1; }
+
+
+    const bootcamps = await finalQuery;
+    res.status(200).json({ success: true, count: totalDocs, pagination, data: bootcamps });
 });
 
 
+
+
+/**
+ * Get a single bootcamp by id
+ * @route       GET /api/v1/bootcamps/:id
+ * @param       req.params.id
+ * @access      Publics
+ */
 exports.getBootcampById = asyncHandler(async (req, res, next) => {
     const bootcamp = await BootcampModel.findById(req.params.id);
     if (!bootcamp)
@@ -19,19 +74,58 @@ exports.getBootcampById = asyncHandler(async (req, res, next) => {
 });
 
 
+
+
+/**
+ * Get bootcamps witin a radius
+ * @route       GET /api/v1/bootcamps/:zipcode/:distance
+ * @param       req.params.zipcode
+ * @param       req.params.distance
+ * @access      Publics
+ */
+exports.getBootcampsInRadius = asyncHandler(async (req, res, next) => {
+    const { zipcode, distance } = req.params;
+    const loc = await geocoder.geocode(zipcode);
+
+    //get latitude and longitude from zipcode
+    const lat = loc[0].latitude;
+    const lon = loc[0].longitude;
+
+    //calc radius using radians
+    //divide distance by radius of the earth
+    //earth radius in km = 6,371 km
+    const radius = distance / 6371;
+    const bootcamps = await BootcampModel.find({
+        location: { $geoWithin: { $centerSphere: [[lon, lat], radius] } }
+    });
+
+    res.status(200).json({ success: true, count: bootcamps.length, data: bootcamps });
+});
+
+
+
+
+/**
+ * Create a new bootcamp
+ * @route       POST /api/v1/bootcamps
+ * @param       req.body
+ * @access      Private
+ */
 exports.createNewBootcamp = asyncHandler(async (req, res, next) => {
     const bootcamp = await BootcampModel.create(req.body);
     res.status(201).json({ success: true, data: bootcamp });
 });
 
-exports.resetData = asyncHandler(async (req, res, next) => {
-    const data = [{ "name": "Devworks Bootcamp", "description": "Devworks is a full stack JavaScript Bootcamp located in the heart of Boston that focuses on the technologies you need to get a high paying job as a web developer", "website": "https://devworks.com", "phone": "(111) 111-1111", "email": "enroll@devworks.com", "address": "233 Bay State Rd Boston MA 02215", "careers": ["Web Development", "UI/UX", "Business"], "housing": true, "jobAssistance": true, "jobGuarantee": false, "acceptGi": true }, { "name": "ModernTech Bootcamp", "description": "ModernTech has one goal, and that is to make you a rockstar developer and/or designer with a six figure salary. We teach both development and UI/UX", "website": "https://moderntech.com", "phone": "(222) 222-2222", "email": "enroll@moderntech.com", "address": "220 Pawtucket St, Lowell, MA 01854", "careers": ["Web Development", "UI/UX", "Mobile Development"], "housing": false, "jobAssistance": true, "jobGuarantee": false, "acceptGi": true }, { "name": "Codemasters", "description": "Is coding your passion? Codemasters will give you the skills and the tools to become the best developer possible. We specialize in full stack web development and data science", "website": "https://codemasters.com", "phone": "(333) 333-3333", "email": "enroll@codemasters.com", "address": "85 South Prospect Street Burlington VT 05405", "careers": ["Web Development", "Data Science", "Business"], "housing": false, "jobAssistance": false, "jobGuarantee": false, "acceptGi": false }, { "name": "Devcentral Bootcamp", "description": "Is coding your passion? Codemasters will give you the skills and the tools to become the best developer possible. We specialize in front end and full stack web development", "website": "https://devcentral.com", "phone": "(444) 444-4444", "email": "enroll@devcentral.com", "address": "45 Upper College Rd Kingston RI 02881", "careers": ["Mobile Development", "Web Development", "Data Science", "Business"], "housing": false, "jobAssistance": true, "jobGuarantee": true, "acceptGi": true }];
-    await BootcampModel.deleteMany();
-    const result = await BootcampModel.insertMany(data);
-    res.status(201).json({ success: true, data: result });
-});
 
 
+
+/**
+ * Update a single bootcamp
+ * @route       PUT /api/v1/bootcamps/:id
+ * @param       req.params.id
+ * @param       req.body
+ * @access      Private
+ */
 exports.updateBootcampById = asyncHandler(async (req, res, next) => {
     const bootcamp = await BootcampModel.findByIdAndUpdate(req.params.id, req.body, { new: true, runValidators: true });
     if (!bootcamp)
@@ -40,12 +134,28 @@ exports.updateBootcampById = asyncHandler(async (req, res, next) => {
 });
 
 
+
+
+/**
+ * Update all bootcamps
+ * @route       PUT /api/v1/bootcamps
+ * @param       req.body
+ * @access      Private
+ */
 exports.updateAllBootcamps = asyncHandler(async (req, res, next) => {
     //const bootcamp = await BootcampModel.updateMany(req.body, { new: true, runValidators: true });
     res.status(200).json({ success: true, msg: `Update all bootcamps` });
 });
 
 
+
+
+/**
+ * Delete a single bootcamp
+ * @route       DELETE /api/v1/bootcamps/:id
+ * @param       req.params.id
+ * @access      Private
+ */
 exports.deleteBootcampById = asyncHandler(async (req, res, next) => {
     const bootcamp = await BootcampModel.findByIdAndDelete(req.params.id);
     if (!bootcamp)
@@ -54,6 +164,13 @@ exports.deleteBootcampById = asyncHandler(async (req, res, next) => {
 });
 
 
+
+
+/**
+ * Delete all bootcamps
+ * @route       DELETE /api/v1/bootcamps
+ * @access      Private
+ */
 exports.deleteAllBootcamps = asyncHandler(async (req, res, next) => {
     const result = await BootcampModel.deleteMany();
     res.status(200).json({ success: true, data: result });

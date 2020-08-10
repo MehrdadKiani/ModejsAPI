@@ -2,7 +2,9 @@
 
 const express = require('express');
 const dotEnv = require('dotenv').config({ path: './config/config.env' });
-const router = require('./routes/routes');
+const bootcampRoutes = require('./routes/bootcampRoutes');
+const courseRoutes = require('./routes/courseRoutes');
+const generalRoutes = require('./routes/generalRoutes');
 const morgan = require('morgan');
 const mongoose = require('mongoose');
 const connectToDB = require('./config/db');
@@ -13,7 +15,9 @@ connectToDB();
 
 app.use(morgan('tiny'));//log the requests
 app.use(express.json());//Body parser
-app.use(router);//mount routes
+app.use('/api/v1/bootcamps', bootcampRoutes);//mount routes
+app.use('/api/v1/courses', courseRoutes);//mount routes
+app.use('/api/v1/general', generalRoutes);
 app.use(handleError);//this middleware shoube located after router middleware
 
 

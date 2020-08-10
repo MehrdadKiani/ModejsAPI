@@ -104,7 +104,16 @@ const BootcampSchema = new mongoose.Schema({
     createdAt: {
         type: Date,
         default: Date.now
+    },
+    avgCost: {
+        type: Number,
+        default: 0
     }
+}, {
+    //virtual fields
+    //to show the list of courses for each bootcamp as an array
+    toJSON: { virtuals: true },
+    toObject: { virtuals: true }
 });
 
 //regular function instead of arrow function
@@ -128,4 +137,13 @@ BootcampSchema.pre('save', async function () {
     };
 });
 
+//virtual fields handelling
+//to show the list of courses for each bootcamp as an array
+//Reverse populate with virtuals
+BootcampSchema.virtual('courseList', {
+    ref: 'Course',
+    localField: '_id',
+    foreignField: 'bootcamp',
+    justOne: false
+})
 module.exports = mongoose.model('Bootcamp', BootcampSchema);
