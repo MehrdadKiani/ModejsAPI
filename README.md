@@ -27,6 +27,7 @@ Rename `_config.env` file to `config.env` file and set parameters by your own.
 - mongoose
 - slugify
 - node-geocoders
+- express-fileupload
 
 ## Basic commands to control development and production modes
 To control development and production modes, the **script** section in the **package.json** file has changed in this way:

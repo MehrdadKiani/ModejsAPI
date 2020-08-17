@@ -4,6 +4,7 @@ const BootcampModel = require('../models/Bootcamp');
 const asyncHandler = require('../utils/asyncHandler');
 const CustomErrorHandler = require('../utils/ErrorHandlerClass');
 const geocoder = require('../utils/geocoder');
+const path = require('path');
 
 
 
@@ -67,7 +68,7 @@ exports.getAllBootcamps = asyncHandler(async (req, res, next) => {
  * @access      Publics
  */
 exports.getBootcampById = asyncHandler(async (req, res, next) => {
-    const bootcamp = await BootcampModel.findById(req.params.id);
+    const bootcamp = await BootcampModel.findById(req.params.id).populate('courseList');
     if (!bootcamp)
         throw new CustomErrorHandler(404, `Bootcamp with id ${req.params.id} not found`);
     res.status(200).json({ success: true, data: bootcamp });
@@ -157,9 +158,15 @@ exports.updateAllBootcamps = asyncHandler(async (req, res, next) => {
  * @access      Private
  */
 exports.deleteBootcampById = asyncHandler(async (req, res, next) => {
-    const bootcamp = await BootcampModel.findByIdAndDelete(req.params.id);
+    //findByIdAndDelete will not trigger the pre and remove middelware on line 141 file model/Bootcamp.js
+    //so, we should change the function to findById and later remove the found records bt remove() function
+
+    //const bootcamp = await BootcampModel.findByIdAndRemove(req.params.id);
+    const bootcamp = await BootcampModel.findById(req.params.id);
     if (!bootcamp)
         throw new CustomErrorHandler(404, `Bootcamp with id ${req.params.id} not found`);
+
+    bootcamp.remove();//here   <------
     res.status(200).json({ success: true, data: bootcamp });
 });
 
@@ -174,4 +181,46 @@ exports.deleteBootcampById = asyncHandler(async (req, res, next) => {
 exports.deleteAllBootcamps = asyncHandler(async (req, res, next) => {
     const result = await BootcampModel.deleteMany();
     res.status(200).json({ success: true, data: result });
+});
+
+
+/**
+ * Upload photo for bootcamp (PUT: Update bootcamp)
+ * @route       PUT /api/v1/bootcamps/:id/photo
+ * @param       req.params.id
+ * @access      Private
+ */
+exports.uploadFile = asyncHandler(async (req, res, next) => {
+    const bootcamp = await BootcampModel.findById(req.params.id);
+    if (!bootcamp)
+        throw new CustomErrorHandler(404, `Bootcamp with id ${req.params.id} not found`);
+
+    if (!req.files) {
+        throw new CustomErrorHandler(400, `Please upload a file`);
+    }
+
+    const file = req.files.file;
+    // Make sure the image is a photo
+    if (!file.mimetype.startsWith('image')) {
+        throw new CustomErrorHandler(400, `Please upload a image file`);
+    }
+
+    //Check file size
+    if (file.size > process.env.MAX_FILE_SIZE) {
+        throw new CustomErrorHandler(400, `Please upload a image less than ${process.env.MAX_FILE_SIZE}`);
+    }
+
+    //Create custom file name
+    //ext = file extention
+    file.name = `photo_${bootcamp._id}${path.parse(file.name).ext}`;
+
+    //mv = move file
+    file.mv(`${process.env.FILE_UPLOAD_PATH}/${file.name}`, async err => {
+        if (err) {
+            console.log(err);
+            throw new CustomErrorHandler(500, err);
+        }
+        await BootcampModel.findByIdAndUpdate(req.params.id, { photo: file.name });
+        res.status(200).json({ success: true, data: file.name })
+    })
 });

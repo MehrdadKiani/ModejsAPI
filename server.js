@@ -9,10 +9,14 @@ const morgan = require('morgan');
 const mongoose = require('mongoose');
 const connectToDB = require('./config/db');
 const handleError = require('./utils/middlewares');
+const fileUpload = require('express-fileupload');
+const path = require('path');
 
 const app = express();
 connectToDB();
 
+app.use(express.static(path.join(__dirname, 'images')));
+app.use(fileUpload());
 app.use(morgan('tiny'));//log the requests
 app.use(express.json());//Body parser
 app.use('/api/v1/bootcamps', bootcampRoutes);//mount routes

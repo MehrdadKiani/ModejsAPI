@@ -79,7 +79,8 @@ const BootcampSchema = new mongoose.Schema({
         max: [10, 'Rating must can not be more than 10']
     },
     averageCost: {
-        type: Number
+        type: Number,
+        default: 0
     },
     photo: {
         type: String,
@@ -104,10 +105,6 @@ const BootcampSchema = new mongoose.Schema({
     createdAt: {
         type: Date,
         default: Date.now
-    },
-    avgCost: {
-        type: Number,
-        default: 0
     }
 }, {
     //virtual fields
@@ -137,13 +134,19 @@ BootcampSchema.pre('save', async function () {
     };
 });
 
+//Cascade delete courses when a bootcamp is deleted
+BootcampSchema.pre('remove', async function () {
+    await this.model('Course').deleteMany({ bootcamp: this._id });
+})
+
+
 //virtual fields handelling
 //to show the list of courses for each bootcamp as an array
 //Reverse populate with virtuals
 BootcampSchema.virtual('courseList', {
     ref: 'Course',
     localField: '_id',
-    foreignField: 'bootcamp',
+    foreignField: 'bootcampId',
     justOne: false
 })
 module.exports = mongoose.model('Bootcamp', BootcampSchema);

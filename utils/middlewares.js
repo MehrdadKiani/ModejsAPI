@@ -24,4 +24,9 @@ const handleError = (err, req, res, next) => {
     });
 };
 
-module.exports = handleError;
+//
+const advancedResult = (model, populate) => async (req, res, next) => {
+
+}
+
+module.exports = handleError, advancedResult;
