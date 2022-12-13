@@ -20,7 +20,7 @@
   "homepage": "https://github.com/MehrdadKiani/NodejsAPI#readme",
   "dependencies": {
     "dotenv": "^8.2.0",
-    "express": "^4.17.1",
+    "express": "^4.17.3",
     "express-fileupload": "^1.2.0",
     "mongoose": "^5.9.27",
     "morgan": "^1.10.0",
